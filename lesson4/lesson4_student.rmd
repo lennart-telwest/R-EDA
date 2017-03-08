@@ -6,41 +6,57 @@ Lesson 4
 ### Scatterplots and Perceived Audience Size
 Notes:
 
+People guess whole numbers -> horizonzal lines
+Most points fall below the perfect accuracy line, with a larger actual audience than percived audience
+
 ***
 
 ### Scatterplots
 Notes:
 
 ```{r Scatterplots}
+library(ggplot2)
+pf <- read.csv('/Users/lt/Git/R-EDA/lesson3/pseudo_facebook.tsv', sep = '\t')
 
+qplot(x = age, y = friend_count, data = pf)
+qplot(age, friend_count, data = pf)
 ```
 
 ***
 
 #### What are some things that you notice right away?
 Response:
-
+Young users have higher friend counts than older ones. There are peeks at certain ages such as ~70 and ~100 which should be investigated.
 ***
 
 ### ggplot Syntax
 Notes:
+- Building up plots one layer at a time!
+- The distribution of users with a lot of friends has multiple peaks, the by far largest between 13-25 and another one around 50
 
 ```{r ggplot Syntax}
-
+ggplot(aes(x = age, y = friend_count), data = pf) +
+  geom_jitter(alpha = 1/20) +
+  xlim(13,90) 
+  
+summary(pf$age)
 ```
 
 ***
 
 ### Overplotting
 Notes:
-
+Jitter needs to be removed as negative numbers can be produced by the noise function which would cause errors in the sqrt function.
 ```{r Overplotting}
-
+ggplot(aes(x = age, y = friend_count), data = pf) +
+  geom_point(alpha = 1/20) +
+  xlim(13,90) +
+  coord_trans(y = "sqrt")
 ```
 
 #### What do you notice in the plot?
 Response:
-
+For ages above 65 the number of friends has a smaller range, there are fewer users with 0 friends.
 ***
 
 ### Coord_trans()
