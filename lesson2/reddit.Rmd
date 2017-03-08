@@ -12,8 +12,23 @@ qplot(data = reddit, x = age.range)
 ```
 
 ```{r}
-reddit$age.f <- factor(reddit$age, levels = c("Under 18", "18-24", "25-34", "35-44", "45-54", "55-64", "65 or Above"))
-qplot(data = reddit, x = age.range)
-reddit$age <- factor(reddit$age, levels = c("Under 18", "18-24", "25-34", "35-44", "45-54", "55-64", "65 or Above"))
+reddit$age.range <- factor(reddit$age, levels = c("Under 18", "18-24", "25-34", "35-44", "45-54",
+                                         "55-64", "65 or Above"))
+qplot(data = reddit, x = ageSorted)
 
 ```
+
+```{r}
+reddit$income.range <- factor(reddit$age, levels = c("Under $20,000", "$20,000 - $29,999", "$50,000 - $69,999", "$70,000 - $99,999", "$100,000 - $149,999", "(Other)",
+                                         " NA's"))
+qplot(data = reddit, x = income)
+
+ Under $20,000      :7892                      : 4335   I like cats.   :11156  
+ $50,000 - $69,999  :4133   askreddit          : 2123   I like dogs.   :17151  
+ $70,000 - $99,999  :4101   fffffffuuuuuuuuuuuu: 1746   I like turtles.: 4442  
+ $100,000 - $149,999:3522   pics               : 1651   NA's           :    5  
+ $20,000 - $29,999  :3206   trees              : 1311                          
+ (Other)            :8285   (Other)            :21562                          
+ NA's 
+```
+
