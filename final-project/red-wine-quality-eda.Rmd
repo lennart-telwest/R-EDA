@@ -1,0 +1,18 @@
+---
+title: "Red Wine Quality - An Exploratory Data Analysis"
+output: red_wine_quality_eda
+---
+
+   
+# Which chemical properties influence the quality of red wines?
+## About the dataset
+This analysis is based on the dataset:
+   P. Cortez, A. Cerdeira, F. Almeida, T. Matos and J. Reis.
+   Modeling wine preferences by data mining from physicochemical properties.
+   In Decision Support Systems, Elsevier, 47(4):547-553. ISSN: 0167-9236.
+The dataset is based on red variants of the Portuguese "Vinho Verde" wine. Only physicochemical (inputs) and sensory (the output) variables
+are available.The output variables are the median of at least 3 evaluations made by wine experts. Each expert graded the wine quality between 0 (very bad) and 10 (very excellent).
+
+```{r}
+
+```
