@@ -1,0 +1,379 @@
+Exploring Red Wine Quality - An Analysis by Lennart Telwest
+========================================================
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+# Load all the packages for this analysis
+library(ggplot2)
+library(dplyr)
+library(GGally)
+library(scales)
+library(memisc)
+library(reshape)
+library(gridExtra)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Load_the_Data}
+# Load the Data
+df <- read.csv("~/git/R-EDA/final-project/wineQualityReds.csv")
+```
+
+# Introduction
+
+## About the dataset
+This analysis will explore a dataset on wine quality and physicochemical
+properties. The objective is to explore which chemical properties influence the
+quality of red wines.
+
+The dataset contains red variants of the Portuguese "Vinho Verde" wine. Only 
+physicochemical (inputs) and sensory (the output) variables are available.
+
+## Description of attributes:
+
+1. fixed acidity: most acids involved with wine or fixed or nonvolatile (do not 
+evaporate readily)
+
+2. volatile acidity: the amount of acetic acid in wine, which at too high of 
+levels can lead to an unpleasant, vinegar taste
+
+3. citric acid: found in small quantities, citric acid can add 'freshness' and 
+flavor to wines
+
+4. residual sugar: the amount of sugar remaining after fermentation stops, it's
+rare to find wines with less than 1 gram/liter and wines with greater than 45 
+grams/liter are considered sweet
+
+5. chlorides: the amount of salt in the wine
+
+6. free sulfur dioxide: the free form of SO2 exists in equilibrium between 
+molecular SO2 (as a dissolved gas) and bisulfite ion; it prevents microbial 
+growth and the oxidation of wine
+
+7. total sulfur dioxide: amount of free and bound forms of S02; in low 
+concentrations, SO2 is mostly undetectable in wine, but at free SO2 
+concentrations over 50 ppm, SO2 becomes evident in the nose and taste of wine
+
+8. density: the density of water is close to that of water depending on the 
+percent alcohol and sugar content
+
+9. pH: describes how acidic or basic a wine is on a scale from 0 (very acidic) 
+to 14 (very basic); most wines are between 3-4 on the pH scale
+
+10. sulphates: a wine additive which can contribute to sulfur dioxide gas (S02) 
+levels, wich acts as an antimicrobial and antioxidant
+
+11. alcohol: the percent alcohol content of the wine
+
+12. quality (score between 0 and 10)
+
+This desription and more background information can be found 
+[here](https://s3.amazonaws.com/udacity-hosted-downloads/ud651/wineQualityInfo.txt).
+
+This analysis is based on:
+   P. Cortez, A. Cerdeira, F. Almeida, T. Matos and J. Reis.
+   Modeling wine preferences by data mining from physicochemical properties.
+   In Decision Support Systems, Elsevier, 47(4):547-553. ISSN: 0167-9236.
+The dataset is available 
+[here](https://s3.amazonaws.com/udacity-hosted-downloads/ud651/wineQualityReds.csv)
+
+## Summary of the dataset
+Let's get a first glimpse on the available variables and their distribution
+by plotting the Five-number summary extended by the mean.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, Summary_of_dataset}
+str(df)
+summary(df)
+```
+
+Some initial observations here:
+
+- There are 1599 observations of 13 numeric variables, with X being the ID. This
+leads to 11 input variables and 1 output variable.
+- The output variable `quality` is categorical, based on the median of at least 
+3 evaluations made by wine experts. Each expert graded the wine quality between 
+0 (very bad) and 10 (very excellent). As seen in the summary above, the output 
+(median) `quality` of those ratings ranged only from 3 to 8, with a mean of 5.6 
+and median of 6.
+
+# Univariate Plots Section
+
+## Fixed Acidity
+The fixed acidity is a right-skewed distribution, with a median of 7.9 g tartaric
+acid per liter.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fixed_acidity_plot}
+qplot(df$fixed.acidity)+ 
+  ggtitle('Fixed Acidity') +
+  xlab('tartaric acid - g / dm^3') +
+  ylab('Number of Wines')
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE, fixed_acidity_summary}
+summary(df$fixed.acidity)
+```
+
+## Volatile Acidity
+The volatile acidity is almost a symmetric distribution with a few positive 
+outliers. The median and mean are ~5.2 g acetic acid per liter.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, volatile_acidity_plot}
+qplot(df$volatile.acidity)+ 
+  ggtitle('Volatile Acidity') +
+  xlab('acetic acid - g / dm^3') +
+  ylab('Number of Wines')
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE, volatile_acidity_summary}
+summary(df$volatile.acidity)
+```
+
+## Citric Acid
+The citric acidity is a linear decreasing distribution with median of ~0.26 g 
+citric acid per liter. Most of the wines do not contain any citric acid, which
+seems reasonable, considering that 'found in small quantities, citric acid can 
+add 'freshness' and flavor to wines'.
+```{r echo=FALSE, message=FALSE, warning=FALSE, citric_acid_plot}
+qplot(df$citric.acid)+ 
+  ggtitle('Citric Acid') +
+  xlab('g / dm^3') +
+  ylab('Number of Wines')
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE, citric_acid_summary}
+summary(df$citric.acid)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, residual_sugar_plot}
+qplot(df$residual.sugar)+ 
+  ggtitle('Residual Sugar') +
+  xlab('g / dm^3') +
+  ylab('Number of Wines')
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE, residual_sugar_summary}
+summary(df$residual.sugar)
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, chlorides_plot}
+qplot(df$chlorides)+ 
+  ggtitle('Chlorides') +
+  xlab('sodium chloride - g / dm^3') +
+  ylab('Number of Wines')
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE, chlorides_summary}
+summary(df$chlorides)
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, free_sulfur_dioxide_plot}
+qplot(df$free.sulfur.dioxide)+ 
+  ggtitle('Free Sulfur Dioxide') +
+  xlab('mg / dm^3') +
+  ylab('Number of Wines')
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE, free_sulfur_dioxide_summary}
+summary(df$free.sulfur.dioxide)
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, total_sulfur_dioxide_plot}
+qplot(df$total.sulfur.dioxide)+ 
+  ggtitle('Total sulfur dioxide') +
+  xlab('mg / dm^3') +
+  ylab('Number of Wines')
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE, total_sulfur_dioxide_summary}
+summary(df$total.sulfur.dioxide)
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, density_plot}
+qplot(df$density)+ 
+  ggtitle('Density') +
+  xlab('g / cm^3') +
+  ylab('Number of Wines')
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE, density_summary}
+summary(df$density)
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, pH_plot}
+qplot(df$pH)+ 
+  ggtitle('pH Value') +
+  xlab('pH') +
+  ylab('Number of Wines')
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE, pH_summary}
+summary(df$pH)
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, sulphates_plot}
+qplot(df$sulphates)+ 
+  ggtitle('Sulphates') +
+  xlab('potassium sulphate - g / dm3') +
+  ylab('Number of Wines')
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE, sulphates_summary}
+summary(df$sulphates)
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, alcohol_plot}
+qplot(df$alcohol)+ 
+  ggtitle('Alcohol') +
+  xlab('% by volume') +
+  ylab('Number of Wines')
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE, alcohol_summary}
+summary(df$alcohol)
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, quality_plot}
+qplot(df$quality)+ 
+  ggtitle('Quality') +
+  xlab('score') +
+  ylab('Number of Wines')
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE, quality_summary}
+summary(df$quality)
+```
+
+
+```{r echo=FALSE, message=FALSE}
+df$rating <- ifelse(df$quality < 5, 'bad', ifelse(
+  df$quality == 5, 'OK', ifelse(df$quality == 6, 'good', 'very good')))
+df$rating <- ordered(df$rating,
+                     levels = c('bad', 'OK', 'good', 'very good'))
+summary(df$rating)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, rating_plot}
+qplot(df$rating)+ 
+  ggtitle('Rating') +
+  xlab('rating') +
+  ylab('Number of Wines')
+```
+
+
+> **Tip**: Make sure that you leave a blank line between the start / end of
+each code block and the end / start of your Markdown text so that it is
+formatted nicely in the knitted text. Note as well that text on consecutive
+lines is treated as a single space. Make sure you have a blank line between
+your paragraphs so that they too are formatted for easy readability.
+
+# Univariate Analysis
+
+> **Tip**: Now that you've completed your univariate explorations, it's time to
+reflect on and summarize what you've found. Use the questions below to help you
+gather your observations and add your own if you have other thoughts!
+
+### What is the structure of your dataset?
+
+### What is/are the main feature(s) of interest in your dataset?
+
+### What other features in the dataset do you think will help support your \
+investigation into your feature(s) of interest?
+
+### Did you create any new variables from existing variables in the dataset?
+
+### Of the features you investigated, were there any unusual distributions? \
+Did you perform any operations on the data to tidy, adjust, or change the form \
+of the data? If so, why did you do this?
+
+
+# Bivariate Plots Section
+
+> **Tip**: Based on what you saw in the univariate plots, what relationships
+between variables might be interesting to look at in this section? Don't limit
+yourself to relationships between a main output feature and one of the
+supporting variables. Try to look at relationships between supporting variables
+as well.
+
+```{r echo=FALSE, Bivariate_Plots}
+
+```
+
+# Bivariate Analysis
+
+> **Tip**: As before, summarize what you found in your bivariate explorations
+here. Use the questions below to guide your discussion.
+
+### Talk about some of the relationships you observed in this part of the \
+investigation. How did the feature(s) of interest vary with other features in \
+the dataset?
+
+### Did you observe any interesting relationships between the other features \
+(not the main feature(s) of interest)?
+
+### What was the strongest relationship you found?
+
+
+# Multivariate Plots Section
+
+> **Tip**: Now it's time to put everything together. Based on what you found in
+the bivariate plots section, create a few multivariate plots to investigate
+more complex interactions between variables. Make sure that the plots that you
+create here are justified by the plots you explored in the previous section. If
+you plan on creating any mathematical models, this is the section where you
+will do that.
+
+```{r echo=FALSE, Multivariate_Plots}
+
+```
+
+# Multivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the \
+investigation. Were there features that strengthened each other in terms of \
+looking at your feature(s) of interest?
+
+### Were there any interesting or surprising interactions between features?
+
+### OPTIONAL: Did you create any models with your dataset? Discuss the \
+strengths and limitations of your model.
+
+------
+
+# Final Plots and Summary
+
+> **Tip**: You've done a lot of exploration and have built up an understanding
+of the structure of and relationships between the variables in your dataset.
+Here, you will select three plots from all of your previous exploration to
+present here as a summary of some of your most interesting findings. Make sure
+that you have refined your selected plots for good titling, axis labels (with
+units), and good aesthetic choices (e.g. color, transparency). After each plot,
+make sure you justify why you chose each plot by describing what it shows.
+
+### Plot One
+```{r echo=FALSE, Plot_One}
+
+```
+
+### Description One
+
+
+### Plot Two
+```{r echo=FALSE, Plot_Two}
+
+```
+
+### Description Two
+
+
+### Plot Three
+```{r echo=FALSE, Plot_Three}
+
+```
+
+### Description Three
+
+------
+
+# Reflection
+
+> **Tip**: Here's the final step! Reflect on the exploration you performed and
+the insights you found. What were some of the struggles that you went through?
+What went well? What was surprising? Make sure you include an insight into
+future work that could be done with the dataset.
+
+> **Tip**: Don't forget to remove this, and the other **Tip** sections before
+saving your final work and knitting the final report!
