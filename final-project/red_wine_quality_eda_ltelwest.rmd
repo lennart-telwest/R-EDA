@@ -270,7 +270,10 @@ summary(df$sulphates)
 ```
 
 ## Alcohol
+Definition: the percent alcohol content of the wine
 
+Most wines contain between ~10% of alcohol. The distribution is skewed with more
+wines containing more than 10% then lower percentage of alcohol.
 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, alcohol_plot}
@@ -283,6 +286,10 @@ qplot(df$alcohol)+
 summary(df$alcohol)
 ```
 
+## Quality
+Defintion: quality is the median of a score between 0 and 10 given by wine experts.
+
+The experts moslty gave a rating of 5 or 6.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, quality_plot}
 qplot(df$quality)+ 
