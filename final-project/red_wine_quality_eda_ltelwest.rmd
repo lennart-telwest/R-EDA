@@ -1,4 +1,4 @@
-Exploring Red Wine Quality - by Lennart Telwest
+Exploring Red Wine Quality by Lennart Telwest
 ========================================================
 ![](red-wine-unsplash.jpg)
 ```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
@@ -84,15 +84,7 @@ str(df)
 summary(df)
 ```
 
-Some initial observations here:
 
-- There are 1599 observations of 13 numeric variables, with X being the ID. This
-leads to 11 input variables and 1 output variable.
-- The output variable `quality` is categorical, based on the median of at least 
-3 evaluations made by wine experts. Each expert graded the wine quality between 
-0 (very bad) and 10 (very excellent). As seen in the summary above, the output 
-(median) `quality` of those ratings ranged only from 3 to 8, with a mean of 5.6 
-and median of 6.
 
 # Univariate Plots Section
 
@@ -289,7 +281,9 @@ summary(df$alcohol)
 ## Quality
 Defintion: quality is the median of a score between 0 and 10 given by wine experts.
 
-The experts moslty gave a rating of 5 or 6.
+The experts moslty gave a rating of 5 or 6. Even though there are a more wines 
+with a rating of 6 and higher than 5 and less the plot looks normally distributed.
+
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, quality_plot}
 qplot(df$quality)+ 
@@ -301,6 +295,9 @@ qplot(df$quality)+
 summary(df$quality)
 ```
 
+As seen in the frequency diagramm above, the amount of wines that recieved a 
+ranking <5 or >6 is negligible so I'll bin them into the categories bad, OK, good
+and very good to get rid of the very few 3 & 8 ratings.
 
 ```{r echo=FALSE, message=FALSE}
 df$rating <- ifelse(df$quality < 5, 'bad', ifelse(
@@ -321,22 +318,31 @@ qplot(df$rating)+
 
 # Univariate Analysis
 
-> **Tip**: Now that you've completed your univariate explorations, it's time to
-reflect on and summarize what you've found. Use the questions below to help you
-gather your observations and add your own if you have other thoughts!
-
 ### What is the structure of your dataset?
 
-### What is/are the main feature(s) of interest in your dataset?
+There are 1599 observations of 13 numeric variables, with X being the ID. This
+leads to 11 input variables and 1 output variable.
+The output variable `quality` is categorical, based on the median of at least 
+3 evaluations made by wine experts. Each expert graded the wine quality between 
+0 (very bad) and 10 (very excellent). As seen in the summary above, the output 
+(median) `quality` of those ratings ranged only from 3 to 8, with a mean of 5.6 
+and median of 6.
+
+
+### What is the main feature of interest in your dataset?
+
+The main feature of interest is the quality which is what in the end matters when
+buying and drinking wine.
 
 ### What other features in the dataset do you think will help support your \
 investigation into your feature(s) of interest?
 
-### Did you create any new variables from existing variables in the dataset?
+The most interesting variables are those that are not normal distributed:
+Citric Acid, Total sulfur dioxide and Alcohol.
 
-### Of the features you investigated, were there any unusual distributions? \
-Did you perform any operations on the data to tidy, adjust, or change the form \
-of the data? If so, why did you do this?
+### Did you create any new variables from existing variables in the dataset?
+The variable rating has been introduced, summarizing the quality of the wine
+in 4 categories: bad, OK, good & very good.
 
 
 # Bivariate Plots Section
@@ -347,9 +353,189 @@ yourself to relationships between a main output feature and one of the
 supporting variables. Try to look at relationships between supporting variables
 as well.
 
-```{r echo=FALSE, Bivariate_Plots}
+```{r echo=FALSE, message=FALSE, warning=FALSE, boxplots}
+get_bivariate_boxplot <- function(x, y, ylab) {
+  return(qplot(data = df, x = x, y = y, geom = 'boxplot', ylab = ylab))
+}
 
+grid.arrange(get_bivariate_boxplot(df$quality, df$fixed.acidity,
+                                   'fixed acidity'),
+             get_bivariate_boxplot(df$quality, df$volatile.acidity,
+                                   'volatile acidity'),
+             get_bivariate_boxplot(df$quality, df$citric.acid,
+                                   'citric acid'),
+             get_bivariate_boxplot(df$quality, df$TAC.acidity,
+                                   'TAC acidity'),
+             get_bivariate_boxplot(df$quality, log10(df$residual.sugar),
+                                   'residual sugar'),
+             get_bivariate_boxplot(df$quality, log10(df$chlorides),
+                                   'chlorides'),
+             get_bivariate_boxplot(df$quality, df$free.sulfur.dioxide,
+                                   'free sulf. dioxide'),
+             get_bivariate_boxplot(df$quality, df$total.sulfur.dioxide,
+                                   'total sulf. dioxide'),
+             get_bivariate_boxplot(df$quality, df$density,
+                                   'density'),
+             get_bivariate_boxplot(df$quality, df$pH,
+                                   'pH'),
+             get_bivariate_boxplot(df$quality, log10(df$sulphates),
+                                   'sulphates'),
+             get_bivariate_boxplot(df$quality, df$alcohol,
+                                   'alcohol'),
+             ncol = 4)
+
+grid.arrange(get_bivariate_boxplot(df$rating, df$fixed.acidity,
+                                   'fixed acidity'),
+             get_bivariate_boxplot(df$rating, df$volatile.acidity,
+                                   'volatile acidity'),
+             get_bivariate_boxplot(df$rating, df$citric.acid,
+                                   'citric acid'),
+             get_bivariate_boxplot(df$rating, df$TAC.acidity,
+                                   'TAC acidity'),
+             get_bivariate_boxplot(df$rating, log10(df$residual.sugar),
+                                   'residual sugar'),
+             get_bivariate_boxplot(df$rating, log10(df$chlorides),
+                                   'chlorides'),
+             get_bivariate_boxplot(df$rating, df$free.sulfur.dioxide,
+                                   'free sulf. dioxide'),
+             get_bivariate_boxplot(df$rating, df$total.sulfur.dioxide,
+                                   'total sulf. dioxide'),
+             get_bivariate_boxplot(df$rating, df$density,
+                                   'density'),
+             get_bivariate_boxplot(df$rating, df$pH,
+                                   'pH'),
+             get_bivariate_boxplot(df$rating, log10(df$sulphates),
+                                   'sulphates'),
+             get_bivariate_boxplot(df$rating, df$alcohol,
+                                   'alcohol'),
+             ncol = 4)
 ```
+
+The boxplots already hint towards some correlations:
+
+Wines of higher quality have:
+
+- high fixed acidity
+- low volatile acitidy
+- high citric acid
+- low density
+- low pH-value
+- high sulphates
+- high alcohol
+
+The other variables do not seem to have an impact on the quality of the wine.
+
+Futher investigation of correlation of the variables against quality should be 
+done using `cor.test`:
+
+```{r echo=FALSE}
+simple_cor_test <- function(x, y) {
+  return(cor.test(x, as.numeric(y))$estimate)
+}
+
+correlations <- c(
+  simple_cor_test(df$fixed.acidity, df$quality),
+  simple_cor_test(df$volatile.acidity, df$quality),
+  simple_cor_test(df$citric.acid, df$quality),
+  simple_cor_test(df$density, df$quality),
+  simple_cor_test(df$pH, df$quality),
+  simple_cor_test(log10(df$sulphates), df$quality),
+  simple_cor_test(df$alcohol, df$quality))
+names(correlations) <- c('fixed.acidity', 'volatile.acidity', 'citric.acid',
+                         'density', 'pH', 'log10.sulphates', 'alcohol')
+correlations
+```
+
+The following variables have correlations to wine quality:
+
+- alcohol
+- volatile acidity
+- sulphates
+- citric acid
+- density
+- fixed acidity
+
+The pH-value does not correlate with wine quality.
+
+Let's see how these variables compare, plotted against each other and faceted by wine `rating`:
+
+```{r echo=FALSE}
+ggplot(data = df, aes(x = volatile.acidity, y = alcohol)) +
+  facet_wrap(~rating) +
+  geom_point()
+
+ggplot(data = df, aes(x = log10(sulphates), y = alcohol)) +
+  facet_wrap(~rating) +
+  geom_point()
+
+ggplot(data = df, aes(x = citric.acid, y = alcohol)) +
+  facet_wrap(~rating) +
+  geom_point()
+
+ggplot(data = df, aes(x = density, y = alcohol)) +
+  facet_wrap(~rating) +
+  geom_point()
+
+ggplot(data = df, aes(x = fixed.acidity, y = alcohol)) +
+  facet_wrap(~rating) +
+  geom_point()
+
+ggplot(data = df, aes(x = volatile.acidity, y = log10(sulphates))) +
+  facet_wrap(~rating) +
+  geom_point()
+
+ggplot(data = df, aes(x = citric.acid, y = log10(sulphates))) +
+  facet_wrap(~rating) +
+  geom_point()
+
+ggplot(data = df, aes(x = citric.acid, y = volatile.acidity)) +
+  facet_wrap(~rating) +
+  geom_point()
+```
+
+The relative value of these scatterplots are suspect; if anything, it illustrates how heavily alcohol content affects rating.  The weakest bivariate relationship appeared to be alcohol vs. citric acid.  The plots were nearly uniformly-distributed.  The strongest relationship appeared to be volatile acididty vs. citric acid, which had a negative correlation.
+
+Examining the acidity variables, I saw strong correlations between them:
+
+```{r echo=FALSE}
+ggplot(data = df, aes(x = fixed.acidity, y = citric.acid)) +
+  geom_point()
+cor.test(df$fixed.acidity, df$citric.acid)
+
+ggplot(data = df, aes(x = volatile.acidity, y = citric.acid)) +
+  geom_point()
+cor.test(df$volatile.acidity, df$citric.acid)
+
+ggplot(data = df, aes(x = log10(TAC.acidity), y = pH)) +
+  geom_point()
+cor.test(log10(df$TAC.acidity), df$pH)
+```
+
+Most notably, base 10 logarithm `TAC.acidity` correlated very well with pH.  This is certainly expected, as pH is essentially a measure of acidity.  An interesting question to pose, using basic chemistry knowledge, is to ask what other components other than the measured acids are affecting pH.  We can quantify this difference by building a predictive linear model, to predict pH based off of `TAC.acidity` and capture the % difference as a new variable.
+
+```{r echo=FALSE}
+m <- lm(I(pH) ~ I(log10(TAC.acidity)), data = df)
+df$pH.predictions <- predict(m, df)
+# (observed - expected) / expected
+df$pH.error <- (df$pH.predictions - df$pH)/df$pH
+
+ggplot(data = df, aes(x = quality, y = pH.error)) +
+  geom_boxplot()
+```
+
+The median % error hovered at or near zero for most wine qualities.  Notably, wines rated with a quality of 3 had large negative error.  We can interpret this finding by saying that for many of the 'bad' wines, total acidity from tartaric, acetic, and citric acids were a worse predictor of pH.  Simply put, it is likely that there were other components--possibly impurities--that changed and affected the pH.
+
+As annotated previously, I hypothesized that `free.sulfur.dioxide` and `total.sulfur.dioxide` were dependent on each other.  Plotting this:
+
+```{r echo=FALSE}
+ggplot(data = df, aes(x = free.sulfur.dioxide, y = total.sulfur.dioxide)) +
+  geom_point() +
+  geom_smooth()
+
+cor.test(df$free.sulfur.dioxide, df$total.sulfur.dioxide)
+```
+
+It is clear that there is a very strong relationship between the two.  Aside from `TAC.acidity`, this seemed to be the strongest bivariate relationship.  Additionally, despite the telling name descriptions, the clear 'floor' on this graph hints that `free.sulfur.dioxide` is a subset of `total.sulfur.dioxide`.
 
 # Bivariate Analysis
 
@@ -376,9 +562,7 @@ you plan on creating any mathematical models, this is the section where you
 will do that.
 
 ```{r echo=FALSE, Multivariate_Plots}
-
 ```
-
 # Multivariate Analysis
 
 ### Talk about some of the relationships you observed in this part of the \
