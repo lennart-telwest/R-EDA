@@ -430,7 +430,7 @@ done using `cor.test`:
 
 ```{r echo=FALSE}
 simple_cor_test <- function(x, y) {
-  return(cor.test(x, as.numeric(y))$estimate)
+  return(cor.test(x, as.numeric(y), method=("pearson"))$estimate)
 }
 
 correlations <- c(
@@ -488,135 +488,168 @@ ggplot(data = df, aes(x = citric.acid, y = log10(sulphates))) +
   facet_wrap(~rating) +
   geom_point()
 
+ggplot(data = df, aes(x = density, y = log10(sulphates))) +
+  facet_wrap(~rating) +
+  geom_point()
+
+ggplot(data = df, aes(x = fixed.acidity, y = log10(sulphates))) +
+  facet_wrap(~rating) +
+  geom_point()
+
 ggplot(data = df, aes(x = citric.acid, y = volatile.acidity)) +
+  facet_wrap(~rating) +
+  geom_point()
+
+ggplot(data = df, aes(x = density, y = volatile.acidity)) +
+  facet_wrap(~rating) +
+  geom_point()
+
+ggplot(data = df, aes(x = fixed.acidity, y = volatile.acidity)) +
+  facet_wrap(~rating) +
+  geom_point()
+
+ggplot(data = df, aes(x = density, y = citric.acid)) +
+  facet_wrap(~rating) +
+  geom_point()
+
+ggplot(data = df, aes(x = fixed.acidity, y = citric.acid)) +
+  facet_wrap(~rating) +
+  geom_point()
+
+ggplot(data = df, aes(x = fixed.acidity, y = density)) +
   facet_wrap(~rating) +
   geom_point()
 ```
 
-The relative value of these scatterplots are suspect; if anything, it illustrates how heavily alcohol content affects rating.  The weakest bivariate relationship appeared to be alcohol vs. citric acid.  The plots were nearly uniformly-distributed.  The strongest relationship appeared to be volatile acididty vs. citric acid, which had a negative correlation.
-
-Examining the acidity variables, I saw strong correlations between them:
-
-```{r echo=FALSE}
-ggplot(data = df, aes(x = fixed.acidity, y = citric.acid)) +
-  geom_point()
-cor.test(df$fixed.acidity, df$citric.acid)
-
-ggplot(data = df, aes(x = volatile.acidity, y = citric.acid)) +
-  geom_point()
-cor.test(df$volatile.acidity, df$citric.acid)
-
-ggplot(data = df, aes(x = log10(TAC.acidity), y = pH)) +
-  geom_point()
-cor.test(log10(df$TAC.acidity), df$pH)
-```
-
-Most notably, base 10 logarithm `TAC.acidity` correlated very well with pH.  This is certainly expected, as pH is essentially a measure of acidity.  An interesting question to pose, using basic chemistry knowledge, is to ask what other components other than the measured acids are affecting pH.  We can quantify this difference by building a predictive linear model, to predict pH based off of `TAC.acidity` and capture the % difference as a new variable.
-
-```{r echo=FALSE}
-m <- lm(I(pH) ~ I(log10(TAC.acidity)), data = df)
-df$pH.predictions <- predict(m, df)
-# (observed - expected) / expected
-df$pH.error <- (df$pH.predictions - df$pH)/df$pH
-
-ggplot(data = df, aes(x = quality, y = pH.error)) +
-  geom_boxplot()
-```
-
-The median % error hovered at or near zero for most wine qualities.  Notably, wines rated with a quality of 3 had large negative error.  We can interpret this finding by saying that for many of the 'bad' wines, total acidity from tartaric, acetic, and citric acids were a worse predictor of pH.  Simply put, it is likely that there were other components--possibly impurities--that changed and affected the pH.
-
-As annotated previously, I hypothesized that `free.sulfur.dioxide` and `total.sulfur.dioxide` were dependent on each other.  Plotting this:
-
-```{r echo=FALSE}
-ggplot(data = df, aes(x = free.sulfur.dioxide, y = total.sulfur.dioxide)) +
-  geom_point() +
-  geom_smooth()
-
-cor.test(df$free.sulfur.dioxide, df$total.sulfur.dioxide)
-```
-
-It is clear that there is a very strong relationship between the two.  Aside from `TAC.acidity`, this seemed to be the strongest bivariate relationship.  Additionally, despite the telling name descriptions, the clear 'floor' on this graph hints that `free.sulfur.dioxide` is a subset of `total.sulfur.dioxide`.
+Most of the plots are nearly uniformly-distributed, but some observations could
+be made and will be explained in the analysis part.
 
 # Bivariate Analysis
 
-> **Tip**: As before, summarize what you found in your bivariate explorations
-here. Use the questions below to guide your discussion.
+### Correlating variables
 
-### Talk about some of the relationships you observed in this part of the \
-investigation. How did the feature(s) of interest vary with other features in \
-the dataset?
+The following variables correlate with wine quality (in descending order):
 
-### Did you observe any interesting relationships between the other features \
-(not the main feature(s) of interest)?
+- alcohol
+- volatile acidity
+- sulphates
+- citric acid
+- density
+- fixed acidity
+
+### Did you observe any interesting relationships between the other features?
+
+1. Alcohol and density correlate negatively: the higher the alcohol the lower the
+density. This can easily be explained with the lower density of alcohol compared
+to water and if there is relatively more alcohol contained the density is thereby
+lower.
+
+2. Fixed acidity and density correlate positively: the higher the fixed acidity
+the higher the density. This was suprising at first, as acidity does not 
+correlate with the alcohol amount, which itself is correlating with the density.
+After doing a little research it seems the acidity has a chemical effect on the 
+density, thus the correlation
 
 ### What was the strongest relationship you found?
 
+The strongest correlation that could have been found was between alcohol & 
+quality.Which can be clearly seen in the boxplot with an ascending quality and
+alcohol amount.
 
 # Multivariate Plots Section
 
-> **Tip**: Now it's time to put everything together. Based on what you found in
-the bivariate plots section, create a few multivariate plots to investigate
-more complex interactions between variables. Make sure that the plots that you
-create here are justified by the plots you explored in the previous section. If
-you plan on creating any mathematical models, this is the section where you
-will do that.
-
 ```{r echo=FALSE, Multivariate_Plots}
+ggplot(data = df,
+       aes(x = citric.acid, y = volatile.acidity,
+           color = quality)) +
+  geom_point() +
+  facet_wrap(~rating)
+
+ggplot(data = df,
+       aes(x = alcohol, y = log10(sulphates),
+           color = quality)) +
+  geom_point() +
+  facet_wrap(~rating)
+
+ggplot(data = df,
+       aes(x = pH, y = alcohol, color = quality)) +
+  geom_point() +
+  facet_wrap(~rating)
 ```
+
 # Multivariate Analysis
 
-### Talk about some of the relationships you observed in this part of the \
-investigation. Were there features that strengthened each other in terms of \
-looking at your feature(s) of interest?
+I primarily examined the 4 features which showed high correlation with quality. 
+These scatterplots were a bit crowded, so I faceted by `rating` to illustrate the
+population differences between good wines, average wines, and bad wines.  It's 
+clear that a higher citric acid and lower volatile (acetic) acid contributes 
+towards better wines.  Likewise, better wines tended to have higher sulphates 
+and alcohol content.  Surprisingly, pH had very little visual impact on wine 
+quality, and was shadowed by the larger impact of alcohol.  Interestingly, this 
+shows that what makes a good wine depends on the type of acids that are present.
 
-### Were there any interesting or surprising interactions between features?
-
-### OPTIONAL: Did you create any models with your dataset? Discuss the \
-strengths and limitations of your model.
 
 ------
 
-# Final Plots and Summary
+## Final Plots and Summary
 
-> **Tip**: You've done a lot of exploration and have built up an understanding
-of the structure of and relationships between the variables in your dataset.
-Here, you will select three plots from all of your previous exploration to
-present here as a summary of some of your most interesting findings. Make sure
-that you have refined your selected plots for good titling, axis labels (with
-units), and good aesthetic choices (e.g. color, transparency). After each plot,
-make sure you justify why you chose each plot by describing what it shows.
-
-### Plot One
+### Plot 1: Effect of acids on wine quality
 ```{r echo=FALSE, Plot_One}
+grid.arrange(ggplot(data = df, aes(x = quality, y = fixed.acidity,
+                                   fill = quality)) + 
+               ylab('Fixed Acidity (g/dm^3)') +
+               xlab('Quality') +
+               geom_boxplot(),
+             ggplot(data = df, aes(x = quality, y = volatile.acidity,
+                                   fill = quality)) +
+               ylab('Volatile Acidity (g/dm^3)') +
+               xlab('Quality') +
+               geom_boxplot(), 
+             ggplot(data = df, aes(x = quality, y = citric.acid,
+                                   fill = quality)) +
+               ylab('Citric Acid (g/dm^3)') +
+               xlab('Quality') +
+               geom_boxplot(), 
+             ggplot(data = df, aes(x = quality, y = pH,
+                                   fill = quality)) +
+               ylab('pH') +
+               xlab('Quality') +
+               geom_boxplot())
 
 ```
 
 ### Description One
+These subplots were created to demonstrate the effect of acidity and pH on wine quality.  Generally, higher acidity (or lower pH) is seen in highly-rated wines.  To caveat this, a presence of volatile (acetic) acid negatively affected wine quality.  Citric acidity had a high correlation with wine quality, while fixed (tartaric) acid had a smaller impact.
 
-
-### Plot Two
+### Plot 2: Effect of Alcohol on Wine Quality
 ```{r echo=FALSE, Plot_Two}
-
+ggplot(data = df, aes(x = quality, y = alcohol,
+                      fill = rating)) +
+  geom_boxplot() +
+  ggtitle('Alcohol Levels in Different Wine Qualities') +
+  xlab('Quality') +
+  ylab('Alcohol (% volume)')
 ```
 
 ### Description Two
+These boxplots demonstrate the effect of alcohol content on wine quality.  Generally, higher alcohol content correlated with higher wine quality. However, as the outliers and intervals show, alchol content alone did not produce a higher quality.
 
-
-### Plot Three
+### Plot 3: What makes good wines, good, and bad wines, bad?
 ```{r echo=FALSE, Plot_Three}
-
+ggplot(data = subset(df, rating != 'average'),
+       aes(x = volatile.acidity, y = alcohol,
+                      color = rating)) +
+  geom_point() +
+  ggtitle('Alcohol vs. Volatile Acidity and Wine Quality') +
+  xlab('Volatile Acidity (g / dm^3)') +
+  ylab('Alcohol (% volume)')
 ```
 
 ### Description Three
+This is perhaps the most telling graph.  I subsetted the data to remove the 'average' wines, or any wine with a rating of 5 or 6.  As the correlation tests show, wine quality was affected most strongly by alcohol and volaticle acidity.  While the boundaries are not as clear cut or modal, it's apparent that high volatile acidity--with few exceptions--kept wine quality down.  A combination of high alcohol content and low volatile acidity produced better wines.
 
 ------
 
 # Reflection
 
-> **Tip**: Here's the final step! Reflect on the exploration you performed and
-the insights you found. What were some of the struggles that you went through?
-What went well? What was surprising? Make sure you include an insight into
-future work that could be done with the dataset.
-
-> **Tip**: Don't forget to remove this, and the other **Tip** sections before
-saving your final work and knitting the final report!
+Through this exploratory data analysis, I was able to identify the key factors that determine and drive wine quality, mainly: alcohol content, sulphates, and acidity.  It is important to note, however, that wine quality is ultimately a subjective measure, albeit measured by wine experts.  That said, the correlations for these variables are within reasonable bounds.  The graphs adequately illustrate the factors that make good wines 'good' and bad wines 'bad'.  Further study with inferential statistics could be done to quantitatively confirm these assertions.
