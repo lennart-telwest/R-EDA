@@ -299,7 +299,7 @@ As seen in the frequency diagramm above, the amount of wines that recieved a
 ranking <5 or >6 is negligible so I'll bin them into the categories bad, OK, good
 and very good to get rid of the very few 3 & 8 ratings.
 
-```{r echo=FALSE, message=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, compute_rating}
 df$rating <- ifelse(df$quality < 5, 'bad', ifelse(
   df$quality == 5, 'OK', ifelse(df$quality == 6, 'good', 'very good')))
 df$rating <- ordered(df$rating,
@@ -320,38 +320,25 @@ qplot(df$rating)+
 
 ### What is the structure of your dataset?
 
-There are 1599 observations of 13 numeric variables, with X being the ID. This
-leads to 11 input variables and 1 output variable.
+There are 1599 observations of 13 numeric variables, with X being the ID it total
+there are 11 input variables and 1 output variable.
 The output variable `quality` is categorical, based on the median of at least 
 3 evaluations made by wine experts. Each expert graded the wine quality between 
 0 (very bad) and 10 (very excellent). As seen in the summary above, the output 
 (median) `quality` of those ratings ranged only from 3 to 8, with a mean of 5.6 
 and median of 6.
-
-
-### What is the main feature of interest in your dataset?
-
 The main feature of interest is the quality which is what in the end matters when
 buying and drinking wine.
-
-### What other features in the dataset do you think will help support your \
-investigation into your feature(s) of interest?
-
 The most interesting variables are those that are not normal distributed:
 Citric Acid, Total sulfur dioxide and Alcohol.
-
-### Did you create any new variables from existing variables in the dataset?
-The variable rating has been introduced, summarizing the quality of the wine
-in 4 categories: bad, OK, good & very good.
+One new variable has been introducded: the rating. As the distrubution of the 
+quality is mostly containing 5's and 6's and scatter below and above, the rating 
+acts as a summary metric. By matching the quality in the 4 rating categories 
+bad, OK, good & very good it can be used in further plots to reduce scatter 
+without loosing too much detail.
 
 
 # Bivariate Plots Section
-
-> **Tip**: Based on what you saw in the univariate plots, what relationships
-between variables might be interesting to look at in this section? Don't limit
-yourself to relationships between a main output feature and one of the
-supporting variables. Try to look at relationships between supporting variables
-as well.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, boxplots}
 get_bivariate_boxplot <- function(x, y, ylab) {
@@ -428,7 +415,7 @@ The other variables do not seem to have an impact on the quality of the wine.
 Futher investigation of correlation of the variables against quality should be 
 done using `cor.test`:
 
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, calculate_correlation}
 simple_cor_test <- function(x, y) {
   return(cor.test(x, as.numeric(y), method=("pearson"))$estimate)
 }
@@ -459,7 +446,7 @@ The pH-value does not correlate with wine quality.
 
 Let's see how these variables compare, plotted against each other and faceted by wine `rating`:
 
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, variable_correlation_scatterplot}
 ggplot(data = df, aes(x = volatile.acidity, y = alcohol)) +
   facet_wrap(~rating) +
   geom_point()
@@ -526,9 +513,9 @@ be made and will be explained in the analysis part.
 
 # Bivariate Analysis
 
-### Correlating variables
-
-The following variables correlate with wine quality (in descending order):
+The strongest correlation is between alcohol & quality which can be clearly seen
+in the boxplot with an ascending quality with increasing alcohol level.
+Also, following variables correlate with wine quality (in descending order):
 
 - alcohol
 - volatile acidity
@@ -537,7 +524,8 @@ The following variables correlate with wine quality (in descending order):
 - density
 - fixed acidity
 
-### Did you observe any interesting relationships between the other features?
+There are two main observations when investigating the correlation between those
+variables:
 
 1. Alcohol and density correlate negatively: the higher the alcohol the lower the
 density. This can easily be explained with the lower density of alcohol compared
@@ -550,15 +538,9 @@ correlate with the alcohol amount, which itself is correlating with the density.
 After doing a little research it seems the acidity has a chemical effect on the 
 density, thus the correlation
 
-### What was the strongest relationship you found?
-
-The strongest correlation that could have been found was between alcohol & 
-quality.Which can be clearly seen in the boxplot with an ascending quality and
-alcohol amount.
-
 # Multivariate Plots Section
 
-```{r echo=FALSE, Multivariate_Plots}
+```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_Plots}
 ggplot(data = df,
        aes(x = citric.acid, y = volatile.acidity,
            color = quality)) +
@@ -594,7 +576,7 @@ shows that what makes a good wine depends on the type of acids that are present.
 ## Final Plots and Summary
 
 ### Plot 1: Effect of acids on wine quality
-```{r echo=FALSE, Plot_One}
+```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_One}
 grid.arrange(ggplot(data = df, aes(x = quality, y = fixed.acidity,
                                    fill = quality)) + 
                ylab('Fixed Acidity (g/dm^3)') +
@@ -622,7 +604,7 @@ grid.arrange(ggplot(data = df, aes(x = quality, y = fixed.acidity,
 These subplots were created to demonstrate the effect of acidity and pH on wine quality.  Generally, higher acidity (or lower pH) is seen in highly-rated wines.  To caveat this, a presence of volatile (acetic) acid negatively affected wine quality.  Citric acidity had a high correlation with wine quality, while fixed (tartaric) acid had a smaller impact.
 
 ### Plot 2: Effect of Alcohol on Wine Quality
-```{r echo=FALSE, Plot_Two}
+```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_Two}
 ggplot(data = df, aes(x = quality, y = alcohol,
                       fill = rating)) +
   geom_boxplot() +
@@ -635,7 +617,7 @@ ggplot(data = df, aes(x = quality, y = alcohol,
 These boxplots demonstrate the effect of alcohol content on wine quality.  Generally, higher alcohol content correlated with higher wine quality. However, as the outliers and intervals show, alchol content alone did not produce a higher quality.
 
 ### Plot 3: What makes good wines, good, and bad wines, bad?
-```{r echo=FALSE, Plot_Three}
+```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_Three}
 ggplot(data = subset(df, rating != 'average'),
        aes(x = volatile.acidity, y = alcohol,
                       color = rating)) +
