@@ -666,4 +666,14 @@ amount of alcohol contained.
 
 # Reflection
 
-Through this exploratory data analysis, I was able to identify the key factors that determine and drive wine quality, mainly: alcohol content, sulphates, and acidity.  It is important to note, however, that wine quality is ultimately a subjective measure, albeit measured by wine experts.  That said, the correlations for these variables are within reasonable bounds.  The graphs adequately illustrate the factors that make good wines 'good' and bad wines 'bad'.  Further study with inferential statistics could be done to quantitatively confirm these assertions.
+The analysis of wine quality identified 6 different variables that correlate with
+red wine quality: alcohol, volatile acidity, sulphates, citric acid, density and 
+fixed acidity.
+The alcohol contained as well as the volatile acidity are those variables that 
+have the strongest impact on the red wine quality. Nonetheless it is imporant to
+keep in mind that this dataset contains only wines of a certain region and there
+could be regional differences that change the impact of e.g. volatile acidity on
+red wines from Portugal compared to Australia.
+As volatile acidity is hard to measure when buying a red wine, it might be worth
+going for the red wine with higher alcohol amount the next time when in doubt of
+which red wine to buy.
