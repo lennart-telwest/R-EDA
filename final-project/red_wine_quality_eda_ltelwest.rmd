@@ -13,8 +13,7 @@ library(gridExtra)
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Load_the_Data}
-# Load the Data
-df <- read.csv("~/git/R-EDA/final-project/wineQualityReds.csv")
+df <- read.csv('wineQualityReds.csv')
 ```
 
 # Introduction
@@ -340,10 +339,11 @@ without loosing too much detail.
 
 # Bivariate Plots Section
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, boxplots}
+```{r echo=FALSE,boxplots}
 get_bivariate_boxplot <- function(x, y, ylab) {
   return(qplot(data = df, x = x, y = y, geom = 'boxplot', ylab = ylab))
 }
+
 
 grid.arrange(get_bivariate_boxplot(df$quality, df$fixed.acidity,
                                    'fixed acidity'),
@@ -351,8 +351,6 @@ grid.arrange(get_bivariate_boxplot(df$quality, df$fixed.acidity,
                                    'volatile acidity'),
              get_bivariate_boxplot(df$quality, df$citric.acid,
                                    'citric acid'),
-             get_bivariate_boxplot(df$quality, df$TAC.acidity,
-                                   'TAC acidity'),
              get_bivariate_boxplot(df$quality, log10(df$residual.sugar),
                                    'residual sugar'),
              get_bivariate_boxplot(df$quality, log10(df$chlorides),
@@ -377,8 +375,6 @@ grid.arrange(get_bivariate_boxplot(df$rating, df$fixed.acidity,
                                    'volatile acidity'),
              get_bivariate_boxplot(df$rating, df$citric.acid,
                                    'citric acid'),
-             get_bivariate_boxplot(df$rating, df$TAC.acidity,
-                                   'TAC acidity'),
              get_bivariate_boxplot(df$rating, log10(df$residual.sugar),
                                    'residual sugar'),
              get_bivariate_boxplot(df$rating, log10(df$chlorides),
