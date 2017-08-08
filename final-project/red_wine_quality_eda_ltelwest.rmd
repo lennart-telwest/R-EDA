@@ -97,9 +97,6 @@ summary(df)
 ## Fixed Acidity
 Defintion: most acids involved with wine or fixed or nonvolatile (do not 
 evaporate readily).
-The fixed acidity is a right-skewed distribution, with a median of 7.9 g tartaric
-acid per liter. There are some outliers that have more than 12 g/L up to a 
-maximum of 15.9 g/L.
 
 ```{r  fixed_acidity_plot}
 qplot(df$fixed.acidity)+ 
@@ -110,6 +107,11 @@ qplot(df$fixed.acidity)+
 ```{r  fixed_acidity_summary}
 summary(df$fixed.acidity)
 ```
+
+The fixed acidity is a right-skewed distribution, with a median of 7.9 g tartaric
+acid per liter. There are some outliers that have more than 12 g/L up to a 
+maximum of 15.9 g/L. The outliers will be plotted in the following.
+
 ```{r fixed_acidity_outliers}
 p1 <- ggplot(df, aes(x = fixed.acidity)) +
   geom_histogram(binwidth = 0.01) +
@@ -127,13 +129,11 @@ grid.arrange(p1, p2)
 ```
 
 
+
 ## Volatile Acidity
 Definition: the amount of acetic acid in wine, which at too high of  levels can
 lead to an unpleasant, vinegar taste.
-The volatile acidity is almost a symmetric distribution with a few positive 
-outliers. The median and mean are ~5.2 g acetic acid per liter.
-The distribuion of volatile acids is again skewed with outliers above 1.0 g/L up
-to almost 1.6 g/L.
+
 
 ```{r  volatile_acidity_plot}
 qplot(df$volatile.acidity)+ 
@@ -144,7 +144,13 @@ qplot(df$volatile.acidity)+
 ```{r  volatile_acidity_summary}
 summary(df$volatile.acidity)
 ```
-```{r}
+
+The volatile acidity is almost a symmetric distribution with a few positive 
+outliers. The median and mean are ~5.2 g acetic acid per liter.
+The distribuion of volatile acids is again skewed with outliers above 1.0 g/L up
+to almost 1.6 g/L. The outliers will be plotted in the following.
+
+```{r volatile_acidity_outliers}
 p1 <- ggplot(df, aes(x = volatile.acidity)) +
   geom_histogram(binwidth = 0.01) +
   labs(y = 'Volatile Acidity (g/L)', x = 'Count',
@@ -163,9 +169,7 @@ grid.arrange(p1, p2)
 ## Citric Acid
 Definition: found in small quantities, citric acid can add 'freshness' and 
 flavor to wines.
-The citric acidity is a linear decreasing distribution with median of ~0.26 g 
-citric acid per liter. Most of the wines (>150) do not contain any citric acid.
-This distribution should be investigated for correlations later on!
+
 ```{r  citric_acid_plot}
 qplot(df$citric.acid)+ 
   ggtitle('Citric Acid') +
@@ -175,14 +179,15 @@ qplot(df$citric.acid)+
 ```{r  citric_acid_summary}
 summary(df$citric.acid)
 ```
+The citric acidity is a linear decreasing distribution with median of ~0.26 g 
+citric acid per liter. Most of the wines (>150) do not contain any citric acid.
+This distribution should be investigated for correlations later on!
+
 
 ## Residual Sugar
 Definition: the amount of sugar remaining after fermentation stops, it'srare to 
 find wines with less than 1 gram/liter and wines with greater than 45 grams/liter
 are considered sweet.
-Most of the red wines in the dataset contain between 1.9 and 2.5 grams sugar per
-liter, while there is a long tail with wines that contain up to a maximum of 15 
-grams sugar per liter.
 
 ```{r  residual_sugar_plot}
 qplot(df$residual.sugar)+ 
@@ -194,13 +199,30 @@ qplot(df$residual.sugar)+
 summary(df$residual.sugar)
 ```
 
+Most of the red wines in the dataset contain between 1.9 and 2.5 grams sugar per
+liter, while there is a long tail with wines that contain up to a maximum of 15 
+grams sugar per liter. The outliers will be plotted in the following.
+
+```{r residual_sugar_outliers}
+p1 <- ggplot(df, aes(x = residual.sugar)) +
+  geom_histogram(binwidth = 0.01) +
+  labs(y = 'Residual Sugar (g/L)', x = 'Count',
+          title = "Residual Sugar distribution") 
+
+p2 <- ggplot(df, aes(y = residual.sugar, x = 1)) +
+  geom_boxplot(color = 'blue') +
+  geom_jitter(aes(x = 1, y = residual.sugar), alpha = 0.3) +
+  labs(y = 'Residual Sugar (g/L)', x = '',
+          title = "Residual Sugar distribution") +
+  coord_flip()
+
+grid.arrange(p1, p2)
+```
+
 ## Chlorides
 Definition: the amount of salt in the wine.
 Most wines contain between 0.07 and 0.09 g of salt per liter. Again there is a 
 long tail with wines containing up to 0.6 g of salt per liter.
-There are some wines that contain a lot more chlorides than the majority being 
-closely to median of 0.08 they contain more than 0.1 g/L and can clearly be 
-seen in the distribution histogram and boxplot.
 
 ```{r  chlorides_plot}
 qplot(df$chlorides)+ 
@@ -213,7 +235,12 @@ qplot(df$chlorides)+
 summary(df$chlorides)
 ```
 
-```{r}
+There are some wines that contain a lot more chlorides than the majority being 
+closely to median of 0.08 they contain more than 0.1 g/L and can clearly be 
+seen in the distribution histogram and boxplot. The outliers will be plotted in 
+the following.
+
+```{r chlorides_outliers}
 p1 <- ggplot(df, aes(x = chlorides)) +
   geom_histogram(binwidth = 0.01) +
   labs(y = 'Chlorides (g/L)', x = 'Count',
@@ -234,8 +261,6 @@ grid.arrange(p1, p2)
 Definition: the free form of SO2 exists in equilibrium between molecular SO2 
 (as a dissolved gas) and bisulfite ion; it prevents microbial growth and the 
 oxidation of wine.
-In the dataset the free sulfur dioxid is found in a right-skewed distribution, 
-with an average of 16g per liter and 50% of the wines containing 7-21g per liter.
 
 ```{r  free_sulfur_dioxide_plot}
 qplot(df$free.sulfur.dioxide)+ 
@@ -248,14 +273,35 @@ qplot(df$free.sulfur.dioxide)+
 summary(df$free.sulfur.dioxide)
 ```
 
+In the dataset the free sulfur dioxid is found in a right-skewed distribution, 
+with an average of 16g per liter and 50% of the wines containing 7-21g per liter.
+The few outliers will be plotted in the following.
+
+```{r free_sulfur_dioxide_outliers}
+p1 <- ggplot(df, aes(x = free.sulfur.dioxide)) +
+  geom_histogram(binwidth = 0.01) +
+  labs(y = 'Free sulfur dioxide (g/L)', x = 'Count',
+          title = "Free sulfur dioxide distribution") 
+
+p2 <- ggplot(df, aes(y = free.sulfur.dioxide, x = 1)) +
+  geom_boxplot(color = 'blue') +
+  geom_jitter(aes(x = 1, y = free.sulfur.dioxide), alpha = 0.3) +
+  labs(y = 'Free sulfur dioxide (g/L)', x = '',
+          title = "Free sulfur dioxide distribution") +
+  coord_flip()
+
+grid.arrange(p1, p2)
+```
+
 ## Total sulfur dioxide
 Definition: amount of free and bound forms of S02; in low concentrations, SO2 is
 mostly undetectable in wine, but at free SO2 concentrations over 50 ppm, SO2 
 becomes evident in the nose and taste of wine.
 
 The red wines contain at least 6 mg per liter and most wines (75%) contain no 
-more than 62mg/l. The distribution is decreasing, with some very extreme outliers
-with more than 250mg/l.
+more than 62mg/l. The distribution is decreasing, with two very extreme outliers
+with more than 250mg/l which will not be further investigated due to the low 
+quantity.
 
 ```{r  total_sulfur_dioxide_plot}
 qplot(df$total.sulfur.dioxide)+ 
@@ -306,9 +352,6 @@ summary(df$pH)
 Definition: a wine additive which can contribute to sulfur dioxide gas (S02) 
 levels, wich acts as an antimicrobial and antioxidant.
 
-Sulphates is a right skewed distribution. Most wines contain between 0.3 and 0.7
-g/l - with some outliers ranging up to 2g/l.
-
 ```{r  sulphates_plot}
 qplot(df$sulphates)+ 
   ggtitle('Sulphates') +
@@ -320,12 +363,11 @@ qplot(df$sulphates)+
 summary(df$sulphates)
 ```
 
+Sulphates is a right skewed distribution. Most wines contain between 0.3 and 0.7
+g/l - with only a few outliers ranging up to 2g/l which will be ignored for now.
+
 ## Alcohol
 Definition: the percent alcohol content of the wine
-
-Most wines contain between ~10% of alcohol. The distribution is skewed with more
-wines containing more than 10% then lower percentage of alcohol.
-
 
 ```{r  alcohol_plot}
 qplot(df$alcohol)+ 
@@ -336,25 +378,16 @@ qplot(df$alcohol)+
 ```{r  alcohol_summary}
 summary(df$alcohol)
 ```
-```{r}
-p1 <- ggplot(df, aes(x = alcohol)) +
-  geom_histogram(binwidth = 0.01) +
-  labs(y = 'Alcohol', x = 'Count',
-          title = "Alcohol distribution") 
 
-p2 <- ggplot(df, aes(y = alcohol, x = 1)) +
-  geom_boxplot(color = 'blue') +
-  geom_jitter(aes(x = 1, y = alcohol), alpha = 0.3) +
-  labs(y = 'Alcohol', x = '',
-          title = "Alcohol distribution") +
-  coord_flip()
-
-grid.arrange(p1, p2)
-```
+Most wines contain between ~10% of alcohol. The distribution is skewed with more
+wines containing more than 10% then lower percentage of alcohol.
 
 ## Quality
-Defintion: quality is a ordinal metric, representing the median of a score given
-by experts which ranges between 0 and 10.
+The output variable `quality` is ordinal, based on the median of at least 
+3 evaluations made by wine experts. Each expert graded the wine quality between 
+0 (very bad) and 10 (very excellent). As seen in the summary above, the output 
+(median) `quality` of those ratings ranged only from 3 to 8, with a mean of 5.6 
+and median of 6.
 
 The experts moslty gave a rating of 5 or 6. Even though there are a more wines 
 with a rating of 6 and higher than 5 and less the plot looks normally distributed.
@@ -370,9 +403,19 @@ ggplot(aes(x = quality), data = df)+
 summary(df$quality)
 ```
 
-As seen in the frequency diagramm above, the amount of wines that recieved a 
-ranking <5 or >6 is negligible so I'll bin them into the categories bad, OK, good
-and very good to get rid of the very few 3 & 8 ratings.
+## Rating
+One new variable has been introducded: the rating. As the distrubution of the 
+quality is mostly containing 5's and 6's and scatter below and above, the rating 
+acts as a summary metric. By matching the quality in the 4 rating categories 
+bad, OK, good & very good it can be used in further plots to reduce scatter 
+without loosing too much detail.
+The quality will be binned into the categories bad, OK, good and very good to
+reduce the discussion of findings about the impact of variables on the quality 
+to those 4 categories.
+bad: quality below 5 
+OK: quality is 5 
+good: quality is 6
+very good: quality is above 6
 
 ```{r  compute_rating}
 df$rating <- ifelse(df$quality < 5, 'bad', ifelse(
@@ -389,29 +432,6 @@ qplot(df$rating)+
   xlab('rating') +
   ylab('Number of Wines')
 ```
-
-
-# Univariate Analysis
-
-### What is the structure of your dataset?
-
-There are 1599 observations of 13 numeric variables, with X being the ID it total
-there are 11 input variables and 1 output variable.
-The output variable `quality` is categorical, based on the median of at least 
-3 evaluations made by wine experts. Each expert graded the wine quality between 
-0 (very bad) and 10 (very excellent). As seen in the summary above, the output 
-(median) `quality` of those ratings ranged only from 3 to 8, with a mean of 5.6 
-and median of 6.
-The main feature of interest is the quality which is what in the end matters when
-buying and drinking wine.
-The most interesting variables are those that are not normal distributed:
-Citric Acid, Total sulfur dioxide and Alcohol.
-One new variable has been introducded: the rating. As the distrubution of the 
-quality is mostly containing 5's and 6's and scatter below and above, the rating 
-acts as a summary metric. By matching the quality in the 4 rating categories 
-bad, OK, good & very good it can be used in further plots to reduce scatter 
-without loosing too much detail.
-
 
 # Bivariate Plots Section
 
@@ -516,73 +536,6 @@ The following variables have correlations to wine quality:
 
 The pH-value does not correlate with wine quality.
 
-Let's see how these variables compare, plotted against each other and faceted by wine `rating`:
-
-```{r  variable_correlation_scatterplot}
-ggplot(data = df, aes(x = volatile.acidity, y = alcohol)) +
-  facet_wrap(~rating) +
-  geom_point(alpha = 0.3)
-
-ggplot(data = df, aes(x = log10(sulphates), y = alcohol)) +
-  facet_wrap(~rating) +
-  geom_point(alpha = 0.3)
-
-ggplot(data = df, aes(x = citric.acid, y = alcohol)) +
-  facet_wrap(~rating) +
-  geom_point(alpha = 0.3)
-
-ggplot(data = df, aes(x = density, y = alcohol)) +
-  facet_wrap(~rating) +
-  geom_point(alpha = 0.3)
-
-ggplot(data = df, aes(x = fixed.acidity, y = alcohol)) +
-  facet_wrap(~rating) +
-  geom_point(alpha = 0.3)
-
-ggplot(data = df, aes(x = volatile.acidity, y = log10(sulphates))) +
-  facet_wrap(~rating) +
-  geom_point(alpha = 0.3)
-
-ggplot(data = df, aes(x = citric.acid, y = log10(sulphates))) +
-  facet_wrap(~rating) +
-  geom_point(alpha = 0.3)
-
-ggplot(data = df, aes(x = density, y = log10(sulphates))) +
-  facet_wrap(~rating) +
-  geom_point(alpha = 0.3)
-
-ggplot(data = df, aes(x = fixed.acidity, y = log10(sulphates))) +
-  facet_wrap(~rating) +
-  geom_point(alpha = 0.3)
-
-ggplot(data = df, aes(x = citric.acid, y = volatile.acidity)) +
-  facet_wrap(~rating) +
-  geom_point(alpha = 0.3)
-
-ggplot(data = df, aes(x = density, y = volatile.acidity)) +
-  facet_wrap(~rating) +
-  geom_point(alpha = 0.3)
-
-ggplot(data = df, aes(x = fixed.acidity, y = volatile.acidity)) +
-  facet_wrap(~rating) +
-  geom_point(alpha = 0.3)
-
-ggplot(data = df, aes(x = density, y = citric.acid)) +
-  facet_wrap(~rating) +
-  geom_point(alpha = 0.3)
-
-ggplot(data = df, aes(x = fixed.acidity, y = citric.acid)) +
-  facet_wrap(~rating) +
-  geom_point(alpha = 0.3)
-
-ggplot(data = df, aes(x = fixed.acidity, y = density)) +
-  facet_wrap(~rating) +
-  geom_point(alpha = 0.3)
-```
-
-Most of the plots are nearly uniformly-distributed, but some observations could
-be made and will be explained in the analysis part.
-
 # Bivariate Analysis
 
 The strongest correlation is between alcohol & quality which can be clearly seen
@@ -616,44 +569,43 @@ density, thus the correlation
 ggplot(data = df,
        aes(x = fixed.acidity, y = density,
            color = factor(quality))) +
-  geom_point(alpha = 0.3) +
-  scale_color_brewer(type='seq') +
-  facet_wrap(~rating)
+  geom_point(alpha = 0.5) +
+  scale_color_brewer(type='seq', palette = 7)
+
 
 ggplot(data = df,
        aes(x = alcohol, y = density,
            color = factor(quality))) +
-  geom_point(alpha = 0.3) +
-  scale_color_brewer(type='seq') +
-  facet_wrap(~rating)
+  geom_point(alpha = 0.5) +
+  scale_color_brewer(type='seq', palette = 7)
+
 
 ggplot(data = df,
        aes(x = alcohol, y = fixed.acidity,
            color = factor(quality))) +
-  geom_point(alpha = 0.3) +
-  scale_color_brewer(type='seq') +
-  facet_wrap(~rating)
+  geom_point(alpha = 0.5) +
+  scale_color_brewer(type='seq', palette = 7)
+
 
 ggplot(data = df,
        aes(x = alcohol, y = volatile.acidity,
            color = factor(quality))) +
-  geom_point(alpha = 0.3) +
-  scale_color_brewer(type='seq') +
-  facet_wrap(~rating)
+  geom_point(alpha = 0.5) +
+  scale_color_brewer(type='seq', palette = 7)
+
 
 ggplot(data = df,
        aes(x = alcohol, y = sulphates,
            color = factor(quality))) +
-  geom_point(alpha = 0.3) +
-  scale_color_brewer(type='seq') +
-  facet_wrap(~rating)
+  geom_point(alpha = 0.5) +
+  scale_color_brewer(type='seq', palette = 7)
 
 ggplot(data = df,
        aes(x = alcohol, y = citric.acid,
            color = factor(quality))) +
-  geom_point(alpha = 0.3) +
-  scale_color_brewer(type='seq') +
-  facet_wrap(~rating)
+  geom_point(alpha = 0.5) +
+  scale_color_brewer(type='seq', palette = 7)
+
 ```
 
 # Multivariate Analysis
@@ -683,9 +635,7 @@ grid.arrange(get_bivariate_boxplot(factor(df$quality), df$fixed.acidity,
             get_bivariate_boxplot(factor(df$quality), df$citric.acid,
                                    'Citric Acid (g/dm^3)'),
             get_bivariate_boxplot(factor(df$quality), df$pH,
-                                   'pH-Value'),
-            get_bivariate_boxplot(factor(df$quality), df$alcohol,
-                                   'Alcohol'))
+                                   'pH-Value'))
 ```
 
 ### Effect of acids on wine quality
@@ -694,13 +644,11 @@ on the qualtiy of red wine. Lower volatile acidity and higher citric acidity lea
 to better wine quality. Those two forms of acid seem to cancel each other out,
 as they're both influencing the fixed acidity and the pH value of the wine which
 does not show a clear trend which could be linked to wine quality.
-The boxplots again show the high impact alcohol has on the quality of the wines,
-especially when keeping in mind that it showed the highest PCC.
 
 ### Plot 2: Effect of Alcohol on Wine Quality
 ```{r  alcohol_quality}
 ggplot(data = df, aes(x = rating, y = alcohol,
-                      fill = rating)) +
+                      color = rating)) +
   geom_boxplot() +
   ggtitle('Alcohol Levels in Different Wine Qualities') +
   xlab('Quality') +
@@ -716,10 +664,11 @@ a higher amount of alcohol is an indicator for a wine of good quality.
 
 ### Plot 3: What makes good wines, good, and bad wines, bad?
 ```{r  Plot_Three}
-ggplot(data = subset(subset(df, rating != 'OK'), rating != 'good'),
+ggplot(data = df,
        aes(x = volatile.acidity, y = alcohol,
                       color = rating)) +
-  geom_point() +
+  geom_point(alpha=0.5) +
+  
   ggtitle('Alcohol vs. Volatile Acidity and Wine Quality') +
   xlab('Volatile Acidity (g / dm^3)') +
   ylab('Alcohol (% volume)')
