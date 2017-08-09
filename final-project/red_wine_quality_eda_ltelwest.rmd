@@ -71,16 +71,6 @@ levels, wich acts as an antimicrobial and antioxidant
 
 12. quality (score between 0 and 10)
 
-This desription and more background information can be found 
-[here](https://s3.amazonaws.com/udacity-hosted-downloads/ud651/wineQualityInfo.txt).
-
-This analysis is based on:
-   P. Cortez, A. Cerdeira, F. Almeida, T. Matos and J. Reis.
-   Modeling wine preferences by data mining from physicochemical properties.
-   In Decision Support Systems, Elsevier, 47(4):547-553. ISSN: 0167-9236.
-The dataset is available 
-[here](https://s3.amazonaws.com/udacity-hosted-downloads/ud651/wineQualityReds.csv)
-
 ## Summary of the dataset
 Let's get a first glimpse on the available variables and their distribution
 by plotting the Five-number summary extended by the mean.
@@ -685,14 +675,26 @@ amount of alcohol contained.
 
 # Reflection
 
-The analysis of wine quality identified 6 different variables that correlate with
-red wine quality: alcohol, volatile acidity, sulphates, citric acid, density and 
-fixed acidity.
-The alcohol contained as well as the volatile acidity are those variables that 
-have the strongest impact on the red wine quality. Nonetheless it is imporant to
-keep in mind that this dataset contains only wines of a certain region and there
-could be regional differences that change the impact of e.g. volatile acidity on
-red wines from Portugal compared to Australia.
-As volatile acidity is hard to measure when buying a red wine, it might be worth
-going for the red wine with higher alcohol amount the next time when in doubt of
-which red wine to buy.
+During the analysis of the quality of red wine I struggeled with the domain 
+knowledge about wine, the process of creating it and how to differentiate a 
+good from a bad one. 
+While taking a look at each available variable in a systematic way like it was 
+done in this dataset is an approach which reveals some correlations, it would be 
+very intersting to distinguish obvious relations such as alcohol and sugar from
+rather suprising findings by having the domain knowledge.
+
+# Future Analysis
+
+- further investigate the cocorrelations between the variables
+- seperate the obvious correlations from those that are suprising (by having  
+some domain knowledge)
+- compare the findings to the white wine dataset and compare the correlating 
+variables
+
+# References
+
+   P. Cortez, A. Cerdeira, F. Almeida, T. Matos and J. Reis.
+   Modeling wine preferences by data mining from physicochemical properties.
+   In Decision Support Systems, Elsevier, 47(4):547-553. ISSN: 0167-9236.
+
+The dataset is available at [here](https://s3.amazonaws.com/udacity-hosted-downloads/ud651/wineQualityReds.csv)
